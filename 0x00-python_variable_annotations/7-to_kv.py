@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Module 7-to_kv
-Contains a function to create a tuple with a string and the square of an int or float
+Contains a function to create a tuple with a
+string and the square of an int or float
 """
 
 from typing import Union, Tuple
