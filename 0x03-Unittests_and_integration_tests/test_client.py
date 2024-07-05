@@ -9,6 +9,7 @@ from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
+
 class TestGithubOrgClient(unittest.TestCase):
     """
     Test cases for the GithubOrgClient class.
@@ -72,7 +73,13 @@ class TestGithubOrgClient(unittest.TestCase):
             mock_get_json.assert_called_once()
             mock_public_repos_url.assert_called_once()
 
-@parameterized_class("org_payload", "repos_payload", "expected_repos", "apache2_repos")
+
+@parameterized_class(
+    "org_payload",
+    "repos_payload",
+    "expected_repos",
+    "apache2_repos"
+)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
     Integration tests for GithubOrgClient class.
@@ -103,7 +110,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         Test the public_repos method.
         """
-        # Mock requests.get().json() to return org_payload and repos_payload based on the fixture
+        # Mock requests.get().json() to return org_payload and
         self.mock_get.side_effect = [
             MagicMock(json=lambda: self.org_payload),
             MagicMock(json=lambda: self.repos_payload)
@@ -114,6 +121,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         # Assert that the returned repos match expected_repos
         self.assertEqual(repos, self.expected_repos)
+
+        # Check that requests.get was called with the correct URL
+        self.mock_get.assert_called_once_with(
+            f"https://api.github.com/orgs/example_org/repos"
+        )
 
 
 if __name__ == "__main__":
