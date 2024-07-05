@@ -5,7 +5,7 @@ Unit tests for the client module.
 
 import unittest
 from unittest.mock import patch, Mock
-from parameterized import parameterized, parameterized_class
+from parameterized import parameterized
 from client import GithubOrgClient
 
 
@@ -46,6 +46,25 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         client = GithubOrgClient("google")
         self.assertEqual(client.has_license(repo, license_key), expected)
+
+    @patch('client.get_json', return_value=[
+        {"name": "repo1"},
+        {"name": "repo2"},
+        {"name": "repo3"}
+    ])
+    def test_public_repos(self, mock_get_json: Mock) -> None:
+        """
+        Test the public_repos method.
+        """
+        with patch.object(
+            GithubOrgClient, '_public_repos_url', new_callable=Mock
+        ) as mock_public_repos_url:
+            mock_public_repos_url.return_value = "http://test.repos.url"
+            client = GithubOrgClient("google")
+            expected_repos = ["repo1", "repo2", "repo3"]
+            self.assertEqual(client.public_repos(), expected_repos)
+            mock_get_json.assert_called_once()
+            mock_public_repos_url.assert_called_once()
 
 
 if __name__ == "__main__":
