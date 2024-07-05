@@ -19,13 +19,17 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc", {"login": "abc"})
     ])
     @patch('client.get_json', return_value={"login": "google"})
-    def test_org(self, org_name: str, expected: dict, mock_get_json: Mock) -> None:
+    def test_org(
+        self, org_name: str, expected: dict, mock_get_json: Mock
+    ) -> None:
         """
         Test that GithubOrgClient.org returns the correct value.
         """
         client = GithubOrgClient(org_name)
         self.assertEqual(client.org, expected)
-        mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org_name}")
+        mock_get_json.assert_called_once_with(
+            f"https://api.github.com/orgs/{org_name}"
+        )
 
     @patch('client.GithubOrgClient.org', new_callable=Mock)
     def test_public_repos_url(self, mock_org: Mock) -> None:
@@ -40,7 +44,9 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False)
     ])
-    def test_has_license(self, repo: dict, license_key: str, expected: bool) -> None:
+    def test_has_license(
+        self, repo: dict, license_key: str, expected: bool
+    ) -> None:
         """
         Test the has_license method.
         """
@@ -53,7 +59,9 @@ class TestGithubOrgClient(unittest.TestCase):
         {"name": "repo3"}
     ])
     @patch.object(GithubOrgClient, '_public_repos_url', new_callable=Mock)
-    def test_public_repos(self, mock_public_repos_url: Mock, mock_get_json: Mock) -> None:
+    def test_public_repos(
+        self, mock_public_repos_url: Mock, mock_get_json: Mock
+    ) -> None:
         """
         Test the public_repos method.
         """
