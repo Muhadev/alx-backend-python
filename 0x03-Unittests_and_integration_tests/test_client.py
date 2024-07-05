@@ -44,9 +44,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False)
     ])
-    def test_has_license(
-        self, repo: dict, license_key: str, expected: bool
-    ) -> None:
+    def test_has_license(self, repo: dict, license_key: str, expected: bool) -> None:
         """
         Test the has_license method.
         """
@@ -58,19 +56,19 @@ class TestGithubOrgClient(unittest.TestCase):
         {"name": "repo2"},
         {"name": "repo3"}
     ])
-    @patch.object(GithubOrgClient, '_public_repos_url', new_callable=Mock)
-    def test_public_repos(
-        self, mock_public_repos_url: Mock, mock_get_json: Mock
-    ) -> None:
+    def test_public_repos(self, mock_get_json: Mock) -> None:
         """
         Test the public_repos method.
         """
-        mock_public_repos_url.return_value = "http://test.repos.url"
-        client = GithubOrgClient("google")
-        expected_repos = ["repo1", "repo2", "repo3"]
-        self.assertEqual(client.public_repos(), expected_repos)
-        mock_get_json.assert_called_once()
-        mock_public_repos_url.assert_called_once()
+        with patch.object(
+            GithubOrgClient, '_public_repos_url', new_callable=Mock
+        ) as mock_public_repos_url:
+            mock_public_repos_url.return_value = "http://test.repos.url"
+            client = GithubOrgClient("google")
+            expected_repos = ["repo1", "repo2", "repo3"]
+            self.assertEqual(client.public_repos(), expected_repos)
+            mock_get_json.assert_called_once()
+            mock_public_repos_url.assert_called_once()
 
 
 if __name__ == "__main__":
